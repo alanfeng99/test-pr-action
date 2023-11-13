@@ -1,27 +1,29 @@
-info:
-  title: "My Project"
-  repository_url: "https://github.com/myproject"
-
-filters:
-  tags:
-    exclude:
-      - "v0.1.*"
-
-sort:
-  by: "tag"
-  order: "desc"
-
-groupBy:
-  type: "tag"
-  commitsSort:
-    by: "subject"
-    order: "asc"
-
-template: |
-  {{range .Versions}}
-  ## {{.Tag.Name}} ({{datetime "2006-01-02" .Date}})
-  {{range .CommitGroups}}
-  ### {{.Title}}
-  {{range .Commits}}
-  - {{.Subject█
-
+name: Update Changelog
+on:
+  push:
+    branches: [main]
+jobs:
+  updateChangelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Git
+        run: |
+          sudo apt-get update
+          sudo apt-get install git -y
+      - name: Update Changelog
+        run: |
+          curl -o git-chglog -L https://github.com/git-chglog/git-chglog/releases/download/0.9.1/git-chglog_linux_amd64
+          chmod u+x git-chglog
+          ./git-chglog -o CHANGELOG.md
+          rm git-chglog
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: update changelog
+          title: Update Changelog
+          body: Update changelog to reflect release changes
+          branch: update-changelog
+          base: main
