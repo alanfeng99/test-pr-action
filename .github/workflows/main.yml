@@ -12,7 +12,13 @@ jobs:
       - name: Update txt
         run: |
           sed -i 's/test/test1/g' test.txt
+      - name: Set up Git
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'youremail@example.com'          
       - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: update changelog
