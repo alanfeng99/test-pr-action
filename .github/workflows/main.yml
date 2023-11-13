@@ -19,7 +19,9 @@ jobs:
       - name: Set up Git
         run: |
           git config --global user.name 'Your Name'
-          git config --global user.email 'youremail@example.com'          
+          git config --global user.email 'youremail@example.com'            
+      - name: Debug GitHub Token
+        run: echo "github token = ${{ secrets.GITHUB_TOKEN }}"
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
